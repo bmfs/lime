@@ -55,6 +55,7 @@ namespace lime {
 			AlphaMode mAlphaMode;
 			Surface *mBitmapSurface;
 			Texture *mBitmapTexture;
+			GPUProg *mCustomProg;
 			bool mColourArrayEnabled;
 			WinDC mDC;
 			int mHeight;

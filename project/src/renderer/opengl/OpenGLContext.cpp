@@ -1,5 +1,5 @@
+#include <iostream>
 #include "renderer/opengl/OpenGLContext.h"
-
 
 int sgDrawCount = 0;
 int sgBufferCount = 0;
@@ -353,6 +353,7 @@ namespace lime {
 			if (elements.empty ())
 				continue;
 			
+			mCustomProg = arrays.mProgram;
 			Vertices &vert = arrays.mVertices;
 			Vertices &tex_coords = arrays.mTexCoords;
 			bool persp = arrays.mFlags & HardwareArrays::PERSPECTIVE;
@@ -781,6 +782,8 @@ namespace lime {
 		#endif
 		
 	}
+
+	
 	
 	
 }

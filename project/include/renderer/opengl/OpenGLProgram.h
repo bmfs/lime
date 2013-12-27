@@ -3,6 +3,7 @@
 
 
 #include "renderer/opengl/OGL.h"
+#include "renderer/opengl/GPUProg.h"
 
 
 namespace lime {
@@ -13,6 +14,7 @@ namespace lime {
 		public:
 			
 			OpenGLProgram (const char *inVertProg, const char *inFragProg, AlphaMode inAlphaMode);
+			OpenGLProgram (const char *inVertProg, const char *inFragProg);
 			virtual ~OpenGLProgram ();
 			
 			virtual bool bind ();
@@ -28,6 +30,9 @@ namespace lime {
 			void setTexCoordData (const float *inData);
 			void setTint (unsigned int inColour);
 			void setTransform (const Trans4x4 &inTrans);
+
+			void setUniformi(const char *id, int *value, int size);
+   			void setUniformf(const char *id, float *value, int size);
 			
 			AlphaMode mAlphaMode;
 			GLint mASlot;

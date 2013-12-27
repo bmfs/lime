@@ -466,6 +466,12 @@ void Graphics::drawTriangles(const QuickVec<float> &inXYs,
 }
 
 
+void Graphics::attachShader(GPUProg *prog)
+{
+   mFillJob.mProgram = prog;
+   mTileJob.mProgram = prog;
+}
+
 
 // This routine converts a list of "GraphicsPaths" (mItems) into a list
 //  of LineData and SolidData.
@@ -648,8 +654,9 @@ bool Graphics::Render( const RenderTarget &inTarget, const RenderState &inState 
       {
          if (inState.mPhase==rpHitTest)
             return inTarget.mHardware->Hits(inState,mHardwareData->mCalls);
-         else
+         else {
             inTarget.mHardware->Render(inState,mHardwareData->mCalls);
+         }
       }
    }
    else

@@ -11,6 +11,18 @@ namespace lime {
 	const float one_on_255 = 1.0 / 255.0;
 	
 	
+	OpenGLProgram::OpenGLProgram (const char *inVertProg, const char *inFragProg) {
+		mVertProg = inVertProg;
+		mFragProg = inFragProg;
+		mAlphaMode = amUnknown;
+		mVertId = 0;
+		mFragId = 0;
+		mTexCoordSlot = -1;
+		mTextureSlot = -1;
+		mColourTransform = 0;
+		recreate ();
+	}
+
 	OpenGLProgram::OpenGLProgram (const char *inVertProg, const char *inFragProg, AlphaMode inAlphaMode) {
 		
 		mVertProg = inVertProg;
@@ -22,7 +34,6 @@ namespace lime {
 		mTextureSlot = -1;
 		mColourTransform = 0;
 		recreate ();
-		
 	}
 	
 	
@@ -254,6 +265,54 @@ namespace lime {
 			
 		}
 		
+	}
+
+	void OpenGLProgram::setUniformf(const char *id, float *value, int size)
+	{
+		GLint location = glGetUniformLocation(mProgramId, id);
+		if (location)
+		{
+			glUseProgram(mProgramId);
+			switch (size)
+			{
+				case 1:
+					glUniform1f(location, *value);
+					break;
+				case 2:
+					glUniform2f(location, value[0], value[1]);
+					break;
+				case 3:
+					glUniform3f(location, value[0], value[1], value[2]);
+					break;
+				case 4:
+					glUniform4f(location, value[0], value[1], value[2], value[3]);
+					break;
+			}
+		}
+	}
+
+	void OpenGLProgram::setUniformi(const char *id, int *value, int size)
+	{
+		GLint location = glGetUniformLocation(mProgramId, id);
+		if (location)
+		{
+			glUseProgram(mProgramId);
+			switch (size)
+			{
+				case 1:
+					glUniform1i(location, *value);
+					break;
+				case 2:
+					glUniform2i(location, value[0], value[1]);
+					break;
+				case 3:
+					glUniform3i(location, value[0], value[1], value[2]);
+					break;
+				case 4:
+					glUniform4i(location, value[0], value[1], value[2], value[3]);
+					break;
+			}
+		}
 	}
 	
 	

@@ -67,7 +67,7 @@ namespace lime {
 		
 		GPUProgID id = mBitmapSurface->BytesPP () == 1 ? gpuBitmapAlpha : gpuBitmap;
 		if (!mProg[id])
-			mProg[id] = GPUProg::create (id, mAlphaMode);
+			mProg[id] = GPUProg::createDefaultShader (id, mAlphaMode);
 		mCurrentProg = mProg[id];
 		if (!mCurrentProg)
 			return;
@@ -87,88 +87,97 @@ namespace lime {
 	bool OpenGL2Context::PrepareDrawing () {
 		
 		GPUProgID id = gpuNone;
+		GPUProg *prog = 0;
+		//check if custom program
+		if (mCustomProg)
+			prog = mCustomProg;
+
+		if (!prog){
 		
-		if (mTexCoords) {
-			
-			if (mIsRadial) {
+			if (mTexCoords) {
 				
-				if (mRadialFocus != 0) {
+				if (mIsRadial) {
 					
-					id = gpuRadialFocusGradient;
+					if (mRadialFocus != 0) {
+						
+						id = gpuRadialFocusGradient;
+						
+					} else {
+						
+						id = gpuRadialGradient;
+						
+					}
 					
-				} else {
+				} else if (mColourTransform && !mColourTransform->IsIdentity ()) {
 					
-					id = gpuRadialGradient;
+					id = gpuTextureTransform;
 					
-				}
-				
-			} else if (mColourTransform && !mColourTransform->IsIdentity ()) {
-				
-				id = gpuTextureTransform;
-				
-			} else if (mColourArray) {
-				
-				id = gpuTextureColourArray;
-				
-			} else {
-				
-				id = gpuTexture;
-				
-			}
-			
-		} else {
-			
-			if (mColourArray) {
-				
-				if (mColourTransform && !mColourTransform->IsIdentity ()) {
+				} else if (mColourArray) {
 					
-					id = gpuColourTransform;
+					id = gpuTextureColourArray;
 					
 				} else {
 					
-					id = gpuColour;
+					id = gpuTexture;
 					
 				}
 				
 			} else {
 				
-				id = gpuSolid;
+				if (mColourArray) {
+					
+					if (mColourTransform && !mColourTransform->IsIdentity ()) {
+						
+						id = gpuColourTransform;
+						
+					} else {
+						
+						id = gpuColour;
+						
+					}
+					
+				} else {
+					
+					id = gpuSolid;
+					
+				}
 				
 			}
 			
+	
+			if (id == gpuNone)
+				return false;
+			
+			if (!mProg[id])
+				mProg[id] = GPUProg::createDefaultShader (id, mAlphaMode);
+			
+			if (!mProg[id])
+				return false;
+			
+			prog = mProg[id];
 		}
 
-		if (id == gpuNone)
-			return false;
-		
-		if (!mProg[id])
-			mProg[id] = GPUProg::create (id, mAlphaMode);
-		
-		if (!mProg[id])
-			return false;
-		
-		GPUProg *prog = mProg[id];
 		mCurrentProg = prog;
-		prog->bind ();
+		mCurrentProg->bind();
 		
-		prog->setPositionData (mPosition, mPositionPerspective);
-		prog->setTransform (mTrans);
+		mCurrentProg->setPositionData (mPosition, mPositionPerspective);
+		mCurrentProg->setTransform (mTrans);
 		
 		if (mTexCoords) {
 			
-			prog->setTexCoordData (mTexCoords);
+			mCurrentProg->setTexCoordData (mTexCoords);
 			mTextureSurface->Bind (*this, 0);
 			
 		}
 		
 		if (mColourArray)
-			prog->setColourData (mColourArray);
+			mCurrentProg->setColourData (mColourArray);
 		
 		if (mColourTransform)
-			prog->setColourTransform (mColourTransform);
+			mCurrentProg->setColourTransform (mColourTransform);
 
 		if (id == gpuRadialFocusGradient)
-			prog->setGradientFocus (mRadialFocus);
+			mCurrentProg->setGradientFocus (mRadialFocus);
 		
 		return true;
 		

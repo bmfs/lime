@@ -7,6 +7,8 @@
 #include <Scale9.h>
 #include <Pixel.h>
 
+#include "renderer/opengl/GPUProg.h"
+
 typedef unsigned int uint32;
 typedef unsigned char uint8;
 
@@ -484,6 +486,7 @@ void ReleaseVertexBufferObject(unsigned int inVBO);
 
 void ConvertOutlineToTriangles(Vertices &ioOutline,const QuickVec<int> &inSubPolys);
 
+
 struct HardwareArrays
 {
    enum
@@ -500,7 +503,7 @@ struct HardwareArrays
      FOCAL_SIGN  = 0x00010000,
    };
 
-   HardwareArrays(Surface *inSurface,unsigned int inFlags);
+   HardwareArrays(Surface *inSurface, GPUProg *inProgram, unsigned int inFlags);
    ~HardwareArrays();
    bool ColourMatch(bool inWantColour);
 
@@ -511,6 +514,7 @@ struct HardwareArrays
 	Colours      mColours;
    QuickVec<float,4> mViewport;
    Surface      *mSurface;
+   GPUProg      *mProgram;
    unsigned int mFlags;
    //unsigned int mVertexBO;
 };
@@ -522,7 +526,7 @@ class HardwareData
 public:
    ~HardwareData();
 
-   HardwareArrays &GetArrays(Surface *inSurface,bool inWithColour,unsigned int inFlags);
+   HardwareArrays &GetArrays(Surface *inSurface, GPUProg *inProgram, bool inWithColour,unsigned int inFlags);
 
    HardwareCalls mCalls;
    
@@ -601,6 +605,7 @@ struct GraphicsJob
    GraphicsStroke  *mStroke;
    IGraphicsFill   *mFill;
    GraphicsTrianglePath  *mTriangles;
+   GPUProg *mProgram;
    #ifdef LIME_DIRECTFB
    class Renderer  *mHardwareRenderer;
    #endif
@@ -670,6 +675,9 @@ public:
    void drawTriangles(const QuickVec<float> &inXYs, const QuickVec<int> &inIndixes,
             const QuickVec<float> &inUVT, int inCull, const QuickVec<int> &inColours,
             int blendMode, const QuickVec<float,4> &inViewport );
+
+   void attachShader(GPUProg *prog);
+
 
    const Extent2DF &GetExtent0(double inRotation);
    bool  HitTest(const UserPoint &inPoint);

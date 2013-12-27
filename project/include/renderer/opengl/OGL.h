@@ -200,23 +200,8 @@ namespace lime
 
 Texture *OGLCreateTexture(Surface *inSurface,unsigned int inFlags);
 
-enum GPUProgID
-{
-   gpuNone = -1,
-   gpuSolid,
-   gpuColour,
-   gpuColourTransform,
-   gpuTexture,
-   gpuTextureColourArray,
-   gpuTextureTransform,
-   gpuBitmap,
-   gpuBitmapAlpha,
-   gpuRadialGradient,
-   gpuRadialFocusGradient,
-   gpuSIZE,
-};
 
-typedef float Trans4x4[4][4];
+/*typedef float Trans4x4[4][4];
 
 class GPUProg
 {
@@ -237,7 +222,7 @@ public:
    virtual void setTint(unsigned int inColour) = 0;
    virtual void setGradientFocus(float inFocus) = 0;
    virtual void finishDrawing() = 0;
-};
+};*/
 
 void InitOGL2Extensions();
 
