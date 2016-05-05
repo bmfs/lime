@@ -1055,7 +1055,7 @@ class AssetCache {
 	public var version:Int;
 	
 	
-	public  () {
+	public function new () {
 		
 		audio = new Map<String, AudioBuffer> ();
 		font = new Map<String, Dynamic /*Font*/> ();
