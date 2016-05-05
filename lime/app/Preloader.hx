@@ -81,7 +81,7 @@ class Preloader #if flash extends Sprite #end {
 						var image = new Image ();
 						images.set (url, image);
 						image.onload = image_onLoad;
-						image.src = url + "?" + cacheVersion;
+						image.src = url;
 						total++;
 						
 					}
